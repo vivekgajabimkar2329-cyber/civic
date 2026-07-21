@@ -1,0 +1,1 @@
+"""Notification-specific DRF permissions."""
