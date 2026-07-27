@@ -9,7 +9,9 @@ from rest_framework import status
 
 
 
-from rest_framework_simplejwt.tokens import RefreshToken
+# pyrefly: ignore [missing-import]
+from rest_framework_simplejwt.tokens import RefreshToken  
+# pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.exceptions import TokenError
 
 from .repositories import PasswordResetTokenRepository
@@ -19,6 +21,7 @@ from .serializers import (
     SendOTPSerializer,
     ForgotPasswordSerializer,
     ResetPasswordSerializer,
+    RegisterSerializer,
 )
 from .services import AuthenticationService
 
@@ -183,4 +186,33 @@ class ProfileView(APIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
             }
+        )
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
+        first_name = serializer.validated_data.get("first_name", "")
+        last_name = serializer.validated_data.get("last_name", "")
+
+        user = User.objects.create_user(
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        return Response(
+            {
+                "message": "User registered successfully",
+                "id": str(user.id),
+                "email": user.email,
+            },
+            status=status.HTTP_201_CREATED,
         )

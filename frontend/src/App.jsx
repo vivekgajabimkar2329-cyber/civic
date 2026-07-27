@@ -1,11 +1,9 @@
 import React from 'react';
+import About from './pages/About';
 
 function App() {
   return (
-    <div>
-      <h1>Welcome to Civic Frontend</h1>
-      <p>Your Vite setup is now working!</p>
-    </div>
+    <About />
   );
 }
 
