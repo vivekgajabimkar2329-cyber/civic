@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gov-primary: #003078;
+  --color-gov-secondary: #005EA5;
+  --color-gov-accent: #1D70B8;
+  --color-gov-success: #00703C;
+  --color-gov-warning: #FFB81C;
+  --color-gov-danger: #D4351C;
+  --color-gov-bg: #F8F9FA;
+  --color-gov-border: #D8D8D8;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}

@@ -1,11 +1,12 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
-    <div>
-      <h1>Welcome to Civic Frontend</h1>
-      <p>Your Vite setup is now working!</p>
-    </div>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 
