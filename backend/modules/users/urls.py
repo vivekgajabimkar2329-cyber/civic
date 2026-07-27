@@ -7,3 +7,9 @@ urlpatterns = [
         "<uuid:pk>/", UserDetailView.as_view(), name="user-detail"
     ),  # Use uuid:pk or str:pk
 ]
+from .views import UserListCreateAPIView, UserDetailAPIView
+
+urlpatterns = [
+    path("", UserListCreateAPIView.as_view(), name="user-list"),
+    path("<uuid:pk>/", UserDetailAPIView.as_view(), name="user-detail"),
+]
