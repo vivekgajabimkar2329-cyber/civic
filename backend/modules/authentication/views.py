@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,19 +13,52 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken  
 # pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .repositories import PasswordResetTokenRepository
 from .serializers import (
+    ChangePasswordSerializer,  # <-- Added
+    ForgotPasswordSerializer,
     LoginSerializer,
     OTPSerializer,
-    SendOTPSerializer,
-    ForgotPasswordSerializer,
+    RegisterSerializer,  # <-- Added
     ResetPasswordSerializer,
+    SendOTPSerializer,
     RegisterSerializer,
 )
 from .services import AuthenticationService
 
 User = get_user_model()
+
+
+# --- NEW: REGISTER VIEW ---
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        # Issue tokens directly after registration
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                "message": "User registered successfully",
+                "user": {
+                    "id": str(user.id),
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                },
+                "tokens": {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class LoginView(APIView):
@@ -62,6 +95,30 @@ class LoginView(APIView):
         )
 
 
+# --- NEW: CHANGE PASSWORD VIEW ---
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        old_password = serializer.validated_data["old_password"]
+        new_password = serializer.validated_data["new_password"]
+
+        if not user.check_password(old_password):
+            return Response(
+                {"message": "Incorrect old password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(new_password)
+        user.save(update_fields=["password"])
+
+        return Response({"message": "Password changed successfully"})
+
+
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -69,7 +126,9 @@ class ForgotPasswordView(APIView):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.filter(email__iexact=serializer.validated_data["email"]).first()
+        user = User.objects.filter(
+            email__iexact=serializer.validated_data["email"]
+        ).first()
 
         if not user:
             return Response({"message": "User not found"}, status=404)
@@ -113,7 +172,9 @@ class VerifyOTPView(APIView):
         serializer = OTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.filter(email__iexact=serializer.validated_data["email"]).first()
+        user = User.objects.filter(
+            email__iexact=serializer.validated_data["email"]
+        ).first()
 
         if not user:
             return Response({"message": "User not found"}, status=404)
@@ -137,12 +198,17 @@ class SendOTPView(APIView):
         serializer = SendOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.filter(email__iexact=serializer.validated_data["email"]).first()
+        user = User.objects.filter(
+            email__iexact=serializer.validated_data["email"]
+        ).first()
         if not user:
-            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
-        otp = AuthenticationService.generate_otp(user, serializer.validated_data["purpose"])
-        # Development-only: deliver this value by email/SMS in production.
+        otp = AuthenticationService.generate_otp(
+            user, serializer.validated_data["purpose"]
+        )
         return Response(
             {"message": "OTP generated", "otp": otp.code},
             status=status.HTTP_201_CREATED,
@@ -186,6 +252,7 @@ class ProfileView(APIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
             }
+        )
         )
 
 
