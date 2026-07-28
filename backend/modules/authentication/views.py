@@ -5,33 +5,26 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework import status
-
-
-
 # pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.tokens import RefreshToken  
 # pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .repositories import PasswordResetTokenRepository
 from .serializers import (
-    ChangePasswordSerializer,  # <-- Added
+    ChangePasswordSerializer,
     ForgotPasswordSerializer,
     LoginSerializer,
     OTPSerializer,
-    RegisterSerializer,  # <-- Added
+    RegisterSerializer,
     ResetPasswordSerializer,
     SendOTPSerializer,
-    RegisterSerializer,
 )
 from .services import AuthenticationService
 
 User = get_user_model()
 
 
-# --- NEW: REGISTER VIEW ---
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
@@ -95,7 +88,6 @@ class LoginView(APIView):
         )
 
 
-# --- NEW: CHANGE PASSWORD VIEW ---
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -252,34 +244,4 @@ class ProfileView(APIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
             }
-        )
-        )
-
-
-class RegisterView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        email = serializer.validated_data["email"]
-        password = serializer.validated_data["password"]
-        first_name = serializer.validated_data.get("first_name", "")
-        last_name = serializer.validated_data.get("last_name", "")
-
-        user = User.objects.create_user(
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-        )
-
-        return Response(
-            {
-                "message": "User registered successfully",
-                "id": str(user.id),
-                "email": user.email,
-            },
-            status=status.HTTP_201_CREATED,
         )
