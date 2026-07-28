@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema, inline_serializer
 
 # pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.tokens import RefreshToken  
@@ -28,6 +29,35 @@ User = get_user_model()
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Register a new user",
+        description="Create a new user account and return access/refresh tokens.",
+        request=RegisterSerializer,
+        responses={
+            201: inline_serializer(
+                name="RegisterResponse",
+                fields={
+                    "message": serializers.CharField(default="User registered successfully"),
+                    "user": inline_serializer(
+                        name="RegisterResponseUser",
+                        fields={
+                            "id": serializers.CharField(),
+                            "email": serializers.EmailField(),
+                            "first_name": serializers.CharField(),
+                            "last_name": serializers.CharField(),
+                        }
+                    ),
+                    "tokens": inline_serializer(
+                        name="RegisterResponseTokens",
+                        fields={
+                            "access": serializers.CharField(),
+                            "refresh": serializers.CharField(),
+                        }
+                    )
+                }
+            )
+        }
+    )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -57,6 +87,26 @@ class RegisterView(APIView):
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Login user",
+        description="Authenticate user with email and password and return access/refresh tokens.",
+        request=LoginSerializer,
+        responses={
+            200: inline_serializer(
+                name="LoginSuccessResponse",
+                fields={
+                    "access": serializers.CharField(),
+                    "refresh": serializers.CharField(),
+                }
+            ),
+            401: inline_serializer(
+                name="LoginErrorResponse",
+                fields={
+                    "message": serializers.CharField(default="Invalid credentials")
+                }
+            )
+        }
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -91,6 +141,21 @@ class LoginView(APIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        summary="Change password",
+        description="Change password for the authenticated user.",
+        request=ChangePasswordSerializer,
+        responses={
+            200: inline_serializer(
+                name="ChangePasswordSuccessResponse",
+                fields={"message": serializers.CharField(default="Password changed successfully")}
+            ),
+            400: inline_serializer(
+                name="ChangePasswordErrorResponse",
+                fields={"message": serializers.CharField(default="Incorrect old password")}
+            )
+        }
+    )
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -114,6 +179,24 @@ class ChangePasswordView(APIView):
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Forgot password",
+        description="Generate a password reset token and send it via email (mocked).",
+        request=ForgotPasswordSerializer,
+        responses={
+            200: inline_serializer(
+                name="ForgotPasswordSuccessResponse",
+                fields={
+                    "message": serializers.CharField(default="Reset token generated"),
+                    "token": serializers.CharField()
+                }
+            ),
+            404: inline_serializer(
+                name="ForgotPasswordErrorResponse",
+                fields={"message": serializers.CharField(default="User not found")}
+            )
+        }
+    )
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -138,6 +221,21 @@ class ForgotPasswordView(APIView):
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Reset password",
+        description="Reset user password using a password reset token.",
+        request=ResetPasswordSerializer,
+        responses={
+            200: inline_serializer(
+                name="ResetPasswordSuccessResponse",
+                fields={"message": serializers.CharField(default="Password updated successfully")}
+            ),
+            400: inline_serializer(
+                name="ResetPasswordErrorResponse",
+                fields={"message": serializers.CharField(default="Invalid token")}
+            )
+        }
+    )
     def post(self, request):
         serializer = ResetPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -160,6 +258,25 @@ class ResetPasswordView(APIView):
 class VerifyOTPView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Verify OTP",
+        description="Verify an OTP code sent to the user's email.",
+        request=OTPSerializer,
+        responses={
+            200: inline_serializer(
+                name="VerifyOTPSuccessResponse",
+                fields={"message": serializers.CharField(default="OTP verified successfully")}
+            ),
+            400: inline_serializer(
+                name="VerifyOTPErrorResponse",
+                fields={"message": serializers.CharField(default="Invalid OTP")}
+            ),
+            404: inline_serializer(
+                name="VerifyOTPUserNotFound",
+                fields={"message": serializers.CharField(default="User not found")}
+            )
+        }
+    )
     def post(self, request):
         serializer = OTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -186,6 +303,24 @@ class VerifyOTPView(APIView):
 class SendOTPView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Send OTP",
+        description="Generate and send a new OTP to the user's email.",
+        request=SendOTPSerializer,
+        responses={
+            201: inline_serializer(
+                name="SendOTPSuccessResponse",
+                fields={
+                    "message": serializers.CharField(default="OTP generated"),
+                    "otp": serializers.CharField()
+                }
+            ),
+            404: inline_serializer(
+                name="SendOTPErrorResponse",
+                fields={"message": serializers.CharField(default="User not found")}
+            )
+        }
+    )
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -210,6 +345,24 @@ class SendOTPView(APIView):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        summary="Logout user",
+        description="Blacklist the refresh token and log out the user.",
+        request=inline_serializer(
+            name="LogoutRequest",
+            fields={"refresh": serializers.CharField()}
+        ),
+        responses={
+            200: inline_serializer(
+                name="LogoutSuccessResponse",
+                fields={"message": serializers.CharField(default="Logged out successfully")}
+            ),
+            400: inline_serializer(
+                name="LogoutErrorResponse",
+                fields={"message": serializers.CharField(default="Invalid token")}
+            )
+        }
+    )
     def post(self, request):
         try:
             refresh_value = request.data.get("refresh")
@@ -234,6 +387,21 @@ class LogoutView(APIView):
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        summary="Retrieve user profile",
+        description="Get profile details of the authenticated user.",
+        responses={
+            200: inline_serializer(
+                name="UserProfileResponse",
+                fields={
+                    "id": serializers.CharField(),
+                    "email": serializers.EmailField(),
+                    "first_name": serializers.CharField(),
+                    "last_name": serializers.CharField(),
+                }
+            )
+        }
+    )
     def get(self, request):
         user = request.user
 

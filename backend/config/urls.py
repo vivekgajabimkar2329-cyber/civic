@@ -39,6 +39,7 @@ urlpatterns = [
         "api/uploads/",
         include("modules.uploads.urls")
     ),
+    path("api/reports/", include("modules.reports.urls")),
 
     # OpenAPI schema and documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
