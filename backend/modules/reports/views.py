@@ -23,7 +23,7 @@ class ReportListCreateView(APIView):
                 status=status.HTTP_201_CREATED
             )
 
-        return Response(serializer.errors, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReportDetailView(APIView):
@@ -41,7 +41,7 @@ class ReportDetailView(APIView):
             updated = ReportService.update_report(id, serializer.validated_data)
             return Response(ReportSerializer(updated).data)
 
-        return Response(serializer.errors, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         ReportService.delete_report(id)
