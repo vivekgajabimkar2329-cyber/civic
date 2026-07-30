@@ -4,36 +4,65 @@ import os
 
 from dotenv import load_dotenv
 
+# ==================================
+# Base Directory
+# ==================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = BASE_DIR / ".env"
-load_dotenv(dotenv_path)
+# ==================================
+# Environment Variables
+# ==================================
 
+load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key-change-me")
-DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if host.strip()]
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key")
+
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "DJANGO_ALLOWED_HOSTS",
+        "127.0.0.1,localhost"
+    ).split(",")
+    if host.strip()
+]
+
+# ==================================
+# Installed Apps
+# ==================================
 
 INSTALLED_APPS = [
+    # Django Apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "modules.employee.apps.EmployeeConfig",
+
+    # Third Party
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+
+    # Local Apps
     "common",
+
     "modules.authentication.apps.AuthenticationConfig",
-    "modules.users",
-    "modules.departments",
-    "modules.complaints",
+    "modules.users.apps.UsersConfig",
+    "modules.departments.apps.DepartmentsConfig",
+    "modules.complaints.apps.ComplaintsConfig",
     "modules.notifications.apps.NotificationsConfig",
     "modules.uploads.apps.UploadsConfig",
     "modules.reports.apps.ReportsConfig",
 ]
+
+# ==================================
+# Middleware
+# ==================================
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -46,49 +75,128 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# ==================================
+# URL Configuration
+# ==================================
+
 ROOT_URLCONF = "config.urls"
-TEMPLATES = [{
-    "BACKEND": "django.template.backends.django.DjangoTemplates",
-    "DIRS": [], "APP_DIRS": True,
-    "OPTIONS": {"context_processors": [
-        "django.template.context_processors.request",
-        "django.contrib.auth.context_processors.auth",
-        "django.contrib.messages.context_processors.messages",
-    ]},
-}]
+
+# ==================================
+# Templates
+# ==================================
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+# ==================================
+# WSGI / ASGI
+# ==================================
+
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {"default": {
-    "ENGINE": "django.db.backends.postgresql",
-    "NAME": os.getenv("POSTGRES_DB", "civic_ai"),
-    "USER": os.getenv("POSTGRES_USER", "postgres"),
-    "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-    "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
-    "PORT": os.getenv("POSTGRES_PORT", "5432"),
-}}
+# ==================================
+# Database
+# ==================================
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
+    }
+}
+
+# ==================================
+# Custom User Model
+# ==================================
 
 AUTH_USER_MODEL = "users.User"
+
+# ==================================
+# Password Validators
+# ==================================
+
 AUTH_PASSWORD_VALIDATORS = []
+
+# ==================================
+# Internationalization
+# ==================================
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
+
 USE_I18N = True
 USE_TZ = True
+
+# ==================================
+# Static Files
+# ==================================
+
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_URL = "media/"
+
+# ==================================
+# Media Files
+# ==================================
+
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ==================================
+# Default Auto Field
+# ==================================
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ==================================
+# Django REST Framework
+# ==================================
+
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
 }
+
+# ==================================
+# JWT
+# ==================================
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
-# Vite's development server uses port 5173 by default.
-CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if origin.strip()]
+
+# ==================================
+# CORS
+# ==================================
+
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origin.strip()
+]
