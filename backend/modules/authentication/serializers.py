@@ -29,7 +29,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(
         write_only=True,
         min_length=8,
-        trim_whitespace=False
+        trim_whitespace=False,
     )
 
 
@@ -37,7 +37,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
         min_length=8,
-        trim_whitespace=False
+        trim_whitespace=False,
     )
 
     class Meta:
@@ -72,5 +72,5 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(
         write_only=True,
         min_length=8,
-        trim_whitespace=False
+        trim_whitespace=False,
     )

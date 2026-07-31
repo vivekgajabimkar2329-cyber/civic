@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 import os
 
+# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
 
 # ==================================
@@ -41,16 +42,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "modules.employee.apps.EmployeeConfig",
 
     # Third Party
     "corsheaders",
     "rest_framework",
+    "drf_spectacular",
     "rest_framework_simplejwt.token_blacklist",
 
     # Local Apps
     "common",
-
+    "modules.employee.apps.EmployeeConfig",
     "modules.authentication.apps.AuthenticationConfig",
     "modules.users.apps.UsersConfig",
     "modules.departments.apps.DepartmentsConfig",
@@ -119,9 +120,12 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv("POSTGRES_PORT"),
+        "OPTIONS": {
+            "sslmode": "require",
+            "channel_binding": "require",
+        },
     }
 }
-
 # ==================================
 # Custom User Model
 # ==================================
@@ -169,12 +173,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==================================
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 # ==================================
@@ -187,16 +187,5 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
-
-# ==================================
-# CORS
-# ==================================
-
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173"
-    ).split(",")
-    if origin.strip()
-]
+# Vite's development server uses port 5173 by default.
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if origin.strip()]

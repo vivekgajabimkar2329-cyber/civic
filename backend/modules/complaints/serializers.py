@@ -9,6 +9,9 @@ class ComplaintReadSerializer(serializers.ModelSerializer):
         serializers.StringRelatedField()
     )  # Displays department string/ID instead of importing serializer
 
+from .models import Complaint
+
+class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
         fields = [
@@ -19,6 +22,8 @@ class ComplaintReadSerializer(serializers.ModelSerializer):
             "status",
             "priority",
             "user",
+            "status",
+            "reporter",
             "department",
             "created_at",
             "updated_at",
@@ -42,3 +47,4 @@ class ComplaintUpdateSerializer(serializers.ModelSerializer):
             "priority",
             "department",
         ]
+        read_only_fields = ["id", "created_at", "updated_at"]
