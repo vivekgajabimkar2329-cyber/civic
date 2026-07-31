@@ -14,6 +14,7 @@ class UserReadSerializer(serializers.ModelSerializer):
             "phone_number",
             "is_active",
             "created_at",
+            "updated_at",
         ]
 
 

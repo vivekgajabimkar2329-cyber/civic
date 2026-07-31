@@ -55,4 +55,4 @@ class Complaint(BaseModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.title
+        return f"{self.title} - {self.status}"

@@ -19,31 +19,26 @@ urlpatterns = [
     path("refresh/", TokenRefreshView.as_view(), name="auth_token_refresh"),
     path("logout/", LogoutView.as_view(), name="auth_logout"),
     path("profile/", ProfileView.as_view(), name="auth_profile"),
-
     path(
         "change-password/",
         ChangePasswordView.as_view(),
         name="auth_change_password",
     ),
-
     path(
         "forgot-password/",
         ForgotPasswordView.as_view(),
         name="auth_forgot_password",
     ),
-
     path(
         "reset-password/",
         ResetPasswordView.as_view(),
         name="auth_reset_password",
     ),
-
     path(
         "send-otp/",
         SendOTPView.as_view(),
         name="auth_send_otp",
     ),
-
     path(
         "verify-otp/",
         VerifyOTPView.as_view(),

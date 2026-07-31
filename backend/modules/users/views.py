@@ -3,6 +3,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from common.exceptions import NotFoundException
 from modules.users.serializers import (
@@ -20,11 +21,22 @@ class UserListCreateView(APIView):
             return [AllowAny()]
         return [IsAuthenticated()]
 
+    @extend_schema(
+        summary="List users",
+        description="Retrieve a list of all users. Requires authentication.",
+        responses={200: UserReadSerializer(many=True)},
+    )
     def get(self, request):
         users = UserService().list_users()
         serializer = UserReadSerializer(users, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        summary="Create a user",
+        description="Register a new user in the system.",
+        request=UserCreateSerializer,
+        responses={201: UserReadSerializer()},
+    )
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -46,10 +58,21 @@ class UserDetailView(APIView):
         except NotFoundException as e:
             raise NotFound(str(e))
 
+    @extend_schema(
+        summary="Retrieve user details",
+        description="Get detailed profile of a specific user by ID.",
+        responses={200: UserReadSerializer()},
+    )
     def get(self, request, pk):
         user = self.get_object(pk)
         return Response(UserReadSerializer(user).data)
 
+    @extend_schema(
+        summary="Update user details",
+        description="Modify a user's details. Partial updates are supported.",
+        request=UserUpdateSerializer,
+        responses={200: UserReadSerializer()},
+    )
     def patch(self, request, pk):
         user = self.get_object(pk)
 
@@ -67,11 +90,12 @@ class UserDetailView(APIView):
 
         return Response(UserReadSerializer(user).data)
 
+    @extend_schema(
+        summary="Delete user",
+        description="Permanently delete a user account by ID.",
+        responses={204: None},
+    )
     def delete(self, request, pk):
         self.get_object(pk)
         UserService().delete_user(pk)
-
-        return Response(
-            {"message": "User deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT,
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
