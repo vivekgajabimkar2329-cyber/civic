@@ -398,6 +398,16 @@ class ProfileView(APIView):
                     "email": serializers.EmailField(),
                     "first_name": serializers.CharField(),
                     "last_name": serializers.CharField(),
+                    "role": serializers.CharField(),
+                    "department": inline_serializer(
+                        name="UserProfileDepartment",
+                        fields={
+                            "id": serializers.IntegerField(),
+                            "name": serializers.CharField(),
+                        },
+                        required=False,
+                        allow_null=True,
+                    )
                 }
             )
         }
@@ -411,5 +421,11 @@ class ProfileView(APIView):
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "role": user.role,
+                "department": {
+                    "id": user.department.id,
+                    "name": user.department.name,
+                } if user.department else None,
             }
         )
+

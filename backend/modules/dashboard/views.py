@@ -8,8 +8,10 @@ from modules.users.models import User
 from modules.departments.models import Department
 from modules.complaints.models import Complaint
 
+from common.permissions import IsAdminOrDepartmentHead
+
 class DashboardStatsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrDepartmentHead]
 
     @extend_schema(
         summary="Retrieve dashboard statistics",
