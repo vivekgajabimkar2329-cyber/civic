@@ -20,14 +20,6 @@ urlpatterns = [
         include("modules.departments.urls")
     ),
     path(
-        "api/users/",
-        include("modules.users.urls")
-    ),
-    path(
-        "api/complaints/",
-        include("modules.complaints.urls")
-    ),
-    path(
         "api/dashboard/",
         include("modules.dashboard.urls")
     ),
@@ -44,18 +36,18 @@ urlpatterns = [
     # OpenAPI schema and documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path(
-        "swagger-docs/",
+        "api/schema/swagger-docs/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-docs",
     ),
     path(
-        "api/schema/redoc/",
+        "api/docs/swagger-docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-docs",
+    ),
+    path(
+        "api/docs/redoc-docs/",
         SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
+        name="redoc-docs",
     ),
 ]

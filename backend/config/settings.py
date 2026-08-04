@@ -82,6 +82,14 @@ INSTALLED_APPS = [
     "modules.reports.apps.ReportsConfig",
 ]
 
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "DJANGO_ALLOWED_HOSTS",
+        "localhost,127.0.0.1,civic-ozor.onrender.com",
+    ).split(",")
+    if host.strip()
+]
 # ---------------------------------------------------------------------------
 # 4. Middleware
 # ---------------------------------------------------------------------------
@@ -145,7 +153,10 @@ else:
             "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
+    
     }
+    
+
 
 # ---------------------------------------------------------------------------
 # 7. Authentication
