@@ -25,7 +25,8 @@ class UserListCreateView(APIView):
     )
     def get(self, request):
         users = UserService().list_users()
-        return Response(UserReadSerializer(users, many=True).data)
+        serializer = UserReadSerializer(users, many=True)
+        return Response(serializer.data)
 
     @extend_schema(
         summary="Create a user",
@@ -36,8 +37,13 @@ class UserListCreateView(APIView):
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         user = UserService().create_user(serializer.validated_data)
-        return Response(UserReadSerializer(user).data, status=status.HTTP_201_CREATED)
+
+        return Response(
+            UserReadSerializer(user).data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class UserDetailView(APIView):
@@ -47,8 +53,8 @@ class UserDetailView(APIView):
     def get_object(self, pk):
         try:
             return UserService().get_user_by_id(pk)
-        except NotFoundException as error:
-            raise NotFound(str(error))
+        except NotFoundException as e:
+            raise NotFound(str(e))
 
     @extend_schema(
         summary="Retrieve user details",
@@ -67,9 +73,19 @@ class UserDetailView(APIView):
     )
     def patch(self, request, pk):
         user = self.get_object(pk)
-        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+
+        serializer = UserUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True,
+        )
         serializer.is_valid(raise_exception=True)
-        user = UserService().update_user(pk, serializer.validated_data)
+
+        user = UserService().update_user(
+            pk,
+            serializer.validated_data,
+        )
+
         return Response(UserReadSerializer(user).data)
 
     @extend_schema(
@@ -81,4 +97,3 @@ class UserDetailView(APIView):
         self.get_object(pk)
         UserService().delete_user(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
-

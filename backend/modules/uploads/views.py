@@ -5,9 +5,17 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, inline_serializer
 
-class FileUploadAPIView(APIView):
+from common.responses import success_response
+from modules.uploads.serializers import (
+    FileUploadInputSerializer,
+    UploadedFileSerializer,
+)
+from modules.uploads.services import UploadService
+
+
+class FileUploadView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = [MultiPartParser, FormParser]
 
     @extend_schema(
         summary="Upload a file",
@@ -37,15 +45,18 @@ class FileUploadAPIView(APIView):
         }
     )
     def post(self, request, *args, **kwargs):
-        file_obj = request.FILES.get("file")
-        if not file_obj:
-            return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = FileUploadInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        # Return mock uploaded file details
-        return Response({
-            "message": "File uploaded successfully",
-            "filename": file_obj.name,
-            "size": file_obj.size,
-            "url": f"/media/uploads/{file_obj.name}"
-        }, status=status.HTTP_201_CREATED)
+        file_instance = UploadService.handle_upload(
+            user=request.user,
+            file_obj=serializer.validated_data["file"],
+        )
 
+        output_serializer = UploadedFileSerializer(file_instance)
+
+        return success_response(
+            data=output_serializer.data,
+            message="File uploaded successfully",
+            status_code=201,
+        )
