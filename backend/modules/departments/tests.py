@@ -11,12 +11,14 @@ class DepartmentAPITestCase(APITestCase):
 
     def setUp(self):
         self.admin_user = User.objects.create_user(
+            username="adminuser",
             email="admin@gmail.com",
             password="adminpassword",
             is_staff=True
         )
         self.department = Department.objects.create(
             name="Water Department",
+            code="WATER",
             description="Handles water complaints"
         )
 
@@ -24,6 +26,7 @@ class DepartmentAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
         data = {
             "name": "Electricity Department",
+            "code": "ELEC",
             "description": "Handles electricity complaints"
         }
 
@@ -65,6 +68,7 @@ class DepartmentAPITestCase(APITestCase):
 
         data = {
             "name": "Updated Department",
+            "code": "WATER_UPDATED",
             "description": "Updated description"
         }
 

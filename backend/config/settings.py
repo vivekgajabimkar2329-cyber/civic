@@ -73,7 +73,6 @@ INSTALLED_APPS = [
 
     # Local — shared kernel & apps
     "common",
-    "modules.employee.apps.EmployeeConfig",
     "modules.authentication.apps.AuthenticationConfig",
     "modules.users.apps.UsersConfig",
     "modules.departments.apps.DepartmentsConfig",
@@ -155,7 +154,6 @@ else:
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
             "OPTIONS": {
                 "sslmode": "require",
-                "channel_binding": "require",
             } if os.getenv("POSTGRES_HOST", "").endswith("neon.tech") else {},
         }
     

@@ -1,9 +1,8 @@
+# pyrefly: disable
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
-# pyrefly: ignore [missing-import]
 from rest_framework.test import APITestCase
-# pyrefly: ignore [missing-import]
 from rest_framework import status 
 
 from .services import AuthenticationService
@@ -15,6 +14,7 @@ class AuthenticationAPITest(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
+            username="sumanth",
             email="sumanth@gmail.com",
             password="pass123",
         )
@@ -22,7 +22,7 @@ class AuthenticationAPITest(APITestCase):
     def test_login_success(self):
 
         response = self.client.post(
-            reverse("login"),
+            reverse("auth_login"),
             {
                 "email": "sumanth@gmail.com",
                 "password": "pass123"
@@ -37,7 +37,7 @@ class AuthenticationAPITest(APITestCase):
     def test_login_invalid_password(self):
 
         response = self.client.post(
-            reverse("login"),
+            reverse("auth_login"),
             {
                 "email": "sumanth@gmail.com",
                 "password": "wrongpassword"
@@ -53,7 +53,7 @@ class AuthenticationAPITest(APITestCase):
     def test_forgot_password(self):
 
         response = self.client.post(
-            reverse("forgot_password"),
+            reverse("auth_forgot_password"),
             {
                 "email": "sumanth@gmail.com"
             },
@@ -71,7 +71,7 @@ class AuthenticationAPITest(APITestCase):
         )
 
         response = self.client.post(
-            reverse("verify_otp"),
+            reverse("auth_verify_otp"),
             {
                 "email": "sumanth@gmail.com",
                 "otp": otp.code
@@ -88,7 +88,7 @@ class AuthenticationAPITest(APITestCase):
         )
 
         response = self.client.post(
-            reverse("reset_password"),
+            reverse("auth_reset_password"),
             {
                 "token": token.token,
                 "password": "newpassword123"
@@ -107,7 +107,7 @@ class AuthenticationAPITest(APITestCase):
     def test_logout(self):
 
         login = self.client.post(
-            reverse("login"),
+            reverse("auth_login"),
             {
                 "email": "sumanth@gmail.com",
                 "password": "pass123"
@@ -123,7 +123,7 @@ class AuthenticationAPITest(APITestCase):
         )
 
         response = self.client.post(
-            reverse("logout"),
+            reverse("auth_logout"),
             {"refresh": refresh},
             format="json",
         )

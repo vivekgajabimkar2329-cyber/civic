@@ -1,5 +1,5 @@
-import uuid
 from django.db import migrations, models
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Department",
+            name='Department',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.UUIDField(
                         default=uuid.uuid4,
                         editable=False,
@@ -21,15 +21,19 @@ class Migration(migrations.Migration):
                         serialize=False,
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
-                ("name", models.CharField(max_length=100, unique=True)),
-                ("code", models.CharField(max_length=20, unique=True)),
-                ("description", models.TextField(blank=True)),
-                ("is_active", models.BooleanField(default=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('name', models.CharField(max_length=100, unique=True)),
+                (
+                    'code',
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                ('description', models.TextField(blank=True)),
+                ('is_active', models.BooleanField(default=True)),
             ],
             options={
-                "db_table": "departments",
+                'db_table': 'departments',
             },
         ),
     ]
+    
