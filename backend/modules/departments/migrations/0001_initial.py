@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=100, unique=True)),
                 (
-                    'Department code',
+                    'code',
                     models.CharField(blank=True, max_length=100, null=True),
                 ),
                 ('description', models.TextField(blank=True)),
