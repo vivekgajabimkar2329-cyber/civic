@@ -6,6 +6,7 @@ from modules.users.serializers import UserReadSerializer
 class ComplaintReadSerializer(serializers.ModelSerializer):
     user = UserReadSerializer(read_only=True)
     department = serializers.StringRelatedField()
+    assigned_to = UserReadSerializer(read_only=True)
 
     class Meta:
         model = Complaint
@@ -18,6 +19,7 @@ class ComplaintReadSerializer(serializers.ModelSerializer):
             "priority",
             "user",
             "department",
+            "assigned_to",
             "created_at",
             "updated_at",
         ]

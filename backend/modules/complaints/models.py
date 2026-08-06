@@ -49,6 +49,14 @@ class Complaint(BaseModel):
         blank=True,
         related_name="complaints",
     )
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_complaints",
+    )
+
 
     class Meta:
         db_table = "complaints"

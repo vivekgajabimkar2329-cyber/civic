@@ -47,6 +47,11 @@ ALLOWED_HOSTS = [
     ).split(",")
     if host.strip()
 ]
+if ".onrender.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(".onrender.com")
+if "civic-ozor.onrender.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("civic-ozor.onrender.com")
+
 
 # ---------------------------------------------------------------------------
 # 3. Installed Apps
@@ -77,6 +82,14 @@ INSTALLED_APPS = [
     "modules.reports.apps.ReportsConfig",
 ]
 
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "DJANGO_ALLOWED_HOSTS",
+        "localhost,127.0.0.1,civic-ozor.onrender.com",
+    ).split(",")
+    if host.strip()
+]
 # ---------------------------------------------------------------------------
 # 4. Middleware
 # ---------------------------------------------------------------------------
@@ -100,7 +113,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -143,7 +156,10 @@ else:
                 "sslmode": "require",
             } if os.getenv("POSTGRES_HOST", "").endswith("neon.tech") else {},
         }
+    
     }
+    
+
 
 # ---------------------------------------------------------------------------
 # 7. Authentication
@@ -218,3 +234,14 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "PREPROCESSING_HOOKS": ["common.openapi.preprocessing_filter_spec"],
 }
+
+# Use local SQLite database during test runs
+import sys
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
