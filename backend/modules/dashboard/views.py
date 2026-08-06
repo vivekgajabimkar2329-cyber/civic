@@ -1,15 +1,46 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema, inline_serializer
 
 from modules.users.models import User
 from modules.departments.models import Department
 from modules.complaints.models import Complaint
 
-class DashboardStatsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+from common.permissions import IsAdminOrDepartmentHead
 
+class DashboardStatsAPIView(APIView):
+    permission_classes = [IsAdminOrDepartmentHead]
+
+    @extend_schema(
+        summary="Retrieve dashboard statistics",
+        description="Get key performance indicators and metrics such as total users, departments, and complaints status breakdown.",
+        responses={
+            200: inline_serializer(
+                name="DashboardStatsResponse",
+                fields={
+                    "summary": inline_serializer(
+                        name="DashboardStatsSummary",
+                        fields={
+                            "total_users": serializers.IntegerField(),
+                            "total_departments": serializers.IntegerField(),
+                            "total_complaints": serializers.IntegerField(),
+                        }
+                    ),
+                    "complaints_by_status": inline_serializer(
+                        name="DashboardStatsStatusBreakdown",
+                        fields={
+                            "pending": serializers.IntegerField(),
+                            "in_progress": serializers.IntegerField(),
+                            "resolved": serializers.IntegerField(),
+                            "rejected": serializers.IntegerField(),
+                        }
+                    )
+                }
+            )
+        }
+    )
     def get(self, request):
         total_users = User.objects.count()
         total_departments = Department.objects.count()
@@ -34,3 +65,4 @@ class DashboardStatsAPIView(APIView):
             }
         }
         return Response(data, status=status.HTTP_200_OK)
+

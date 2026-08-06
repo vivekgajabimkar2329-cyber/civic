@@ -20,6 +20,14 @@ class ComplaintRepository:
         )
 
     @staticmethod
+    def get_by_department(department_id) -> QuerySet[Complaint]:
+        return (
+            Complaint.objects.filter(department_id=department_id)
+            .select_related("user", "department")
+            .order_by("-created_at")
+        )
+
+    @staticmethod
     def get_by_id(complaint_id: str) -> Optional[Complaint]:
         return (
             Complaint.objects.filter(id=complaint_id)

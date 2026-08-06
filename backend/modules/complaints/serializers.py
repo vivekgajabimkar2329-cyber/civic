@@ -5,13 +5,9 @@ from modules.users.serializers import UserReadSerializer
 
 class ComplaintReadSerializer(serializers.ModelSerializer):
     user = UserReadSerializer(read_only=True)
-    department = (
-        serializers.StringRelatedField()
-    )  # Displays department string/ID instead of importing serializer
+    department = serializers.StringRelatedField()
+    assigned_to = UserReadSerializer(read_only=True)
 
-from .models import Complaint
-
-class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
         fields = [
@@ -22,9 +18,8 @@ class ComplaintSerializer(serializers.ModelSerializer):
             "status",
             "priority",
             "user",
-            "status",
-            "reporter",
             "department",
+            "assigned_to",
             "created_at",
             "updated_at",
         ]

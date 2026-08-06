@@ -10,7 +10,7 @@ urlpatterns = [
     ),
 
     path(
-        "<int:pk>/",
+        "<uuid:pk>/",
         DepartmentDetailAPIView.as_view(),
         name="department-detail"
     ),

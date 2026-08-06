@@ -153,7 +153,7 @@ export default function About() {
 
       {/* Mission & Vision Section */}
       <section id="mission-vision" className="py-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
               Guiding Principles
@@ -182,7 +182,7 @@ export default function About() {
                     <span className="text-blue-600 font-bold">✓</span> Eliminating urban maintenance backlogs
                   </li>
                   <li className="flex items-center gap-2">
-                    <span class="text-blue-600 font-bold">✓</span> Ensuring fair service delivery across all zip codes
+                    <span className="text-blue-600 font-bold">✓</span> Ensuring fair service delivery across all zip codes
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-blue-600 font-bold">✓</span> Lowering operational costs through predictive maintenance
@@ -219,7 +219,7 @@ export default function About() {
       </section>
 
       {/* How Civic AI Works Section */}
-      <section id="how-it-works" class="py-20 bg-slate-50 dark:bg-slate-950">
+      <section id="how-it-works" className="py-20 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
@@ -360,7 +360,7 @@ export default function About() {
       </section>
 
       {/* Comprehensive Solutions Section */}
-      <section id="comprehensive-solutions" class="py-20 bg-slate-50 dark:bg-slate-950">
+      <section id="comprehensive-solutions" className="py-20 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
@@ -582,7 +582,7 @@ export default function About() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" class="py-20 bg-slate-50 dark:bg-slate-950">
+      <section id="faq" className="py-20 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">

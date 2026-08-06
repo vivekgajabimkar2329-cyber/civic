@@ -1,9 +1,18 @@
 import React from 'react';
-import About from './pages/About';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Navbar from './components/common/Navbar';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
-    <About />
+    <Router>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <AppRoutes />
+        </main>
+      </div>
+    </Router>
   );
 }
 

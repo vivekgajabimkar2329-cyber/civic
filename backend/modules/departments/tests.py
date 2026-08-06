@@ -39,7 +39,7 @@ class DepartmentAPITestCase(APITestCase):
         )
 
     def test_get_all_departments(self):
-
+        self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(
             "/api/departments/"
         )
@@ -50,7 +50,7 @@ class DepartmentAPITestCase(APITestCase):
         )
 
     def test_get_department_by_id(self):
-
+        self.client.force_authenticate(user=self.admin_user)
         response = self.client.get(
             f"/api/departments/{self.department.id}/"
         )
