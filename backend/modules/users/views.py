@@ -47,12 +47,25 @@ class UserListCreateView(APIView):
 
 
 class UserDetailView(APIView):
-    permission_classes = [IsSuperAdminOrCityAdmin]
+    permission_classes = [IsAuthenticated]
 
-
-    def get_object(self, pk):
+    def get_object(self, request, pk):
         try:
-            return UserService().get_user_by_id(pk)
+            obj = UserService().get_user_by_id(pk)
+            # Allow access if the user is an Admin OR is retrieving/updating their own account
+            is_admin = (
+                request.user.is_superuser
+                or request.user.is_staff
+                or request.user.role in ["SUPER_ADMIN", "CITY_ADMIN"]
+            )
+            is_self = str(obj.id) == str(request.user.id)
+
+            if not (is_admin or is_self):
+                self.permission_denied(
+                    request,
+                    message="You do not have permission to perform this action."
+                )
+            return obj
         except NotFoundException as e:
             raise NotFound(str(e))
 
@@ -62,7 +75,7 @@ class UserDetailView(APIView):
         responses={200: UserReadSerializer()},
     )
     def get(self, request, pk):
-        user = self.get_object(pk)
+        user = self.get_object(request, pk)
         return Response(UserReadSerializer(user).data)
 
     @extend_schema(
@@ -72,7 +85,7 @@ class UserDetailView(APIView):
         responses={200: UserReadSerializer()},
     )
     def patch(self, request, pk):
-        user = self.get_object(pk)
+        user = self.get_object(request, pk)
 
         serializer = UserUpdateSerializer(
             user,
@@ -94,6 +107,17 @@ class UserDetailView(APIView):
         responses={204: None},
     )
     def delete(self, request, pk):
-        self.get_object(pk)
+        # Delete should only be allowed for Admins
+        is_admin = (
+            request.user.is_superuser
+            or request.user.is_staff
+            or request.user.role in ["SUPER_ADMIN", "CITY_ADMIN"]
+        )
+        if not is_admin:
+            self.permission_denied(
+                request,
+                message="Only administrators can delete user accounts."
+            )
+        self.get_object(request, pk)
         UserService().delete_user(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
