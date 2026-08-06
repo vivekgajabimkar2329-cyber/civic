@@ -29,14 +29,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load local overrides first (civic/backend/.env)
 load_dotenv(BASE_DIR / ".env")
 
-# Then load the main project .env (civic/.env) — values here take precedence
-# This is where DATABASE_URL, SECRET_KEY, CORS etc. live
+# Then load the main project .env (civic/.env) if present — values there take precedence
 load_dotenv(BASE_DIR.parent / ".env", override=True)
 
 # ---------------------------------------------------------------------------
 # 2. Core Settings
 # ---------------------------------------------------------------------------
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key-change-me")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key")
 
 DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
 
@@ -65,18 +64,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     # Third-party
     "corsheaders",
     "rest_framework",
     "drf_spectacular",
     "rest_framework_simplejwt.token_blacklist",
-    # Local — shared kernel
+
+    # Local — shared kernel & apps
     "common",
-    # Local — feature modules
+    "modules.employee.apps.EmployeeConfig",
     "modules.authentication.apps.AuthenticationConfig",
-    "modules.users",
-    "modules.departments",
-    "modules.complaints",
+    "modules.users.apps.UsersConfig",
+    "modules.departments.apps.DepartmentsConfig",
+    "modules.complaints.apps.ComplaintsConfig",
     "modules.notifications.apps.NotificationsConfig",
     "modules.uploads.apps.UploadsConfig",
     "modules.reports.apps.ReportsConfig",
@@ -143,15 +144,19 @@ if _db_url:
         )
     }
 else:
-    # Local PostgreSQL via individual env vars
+    # Local or env-based PostgreSQL
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB", "civic_ai"),
-            "USER": os.getenv("POSTGRES_USER", "postgres"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-            "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
+            "NAME": os.getenv("POSTGRES_DB", "neondb"),
+            "USER": os.getenv("POSTGRES_USER", "neondb_owner"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", "npg_5Cn9SfbiIWTM"),
+            "HOST": os.getenv("POSTGRES_HOST", "ep-summer-unit-aynzk9s2.c-5.us-east-2.aws.neon.tech"),
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
+            "OPTIONS": {
+                "sslmode": "require",
+                "channel_binding": "require",
+            } if os.getenv("POSTGRES_HOST", "").endswith("neon.tech") else {},
         }
     
     }
@@ -162,6 +167,7 @@ else:
 # 7. Authentication
 # ---------------------------------------------------------------------------
 AUTH_USER_MODEL = "users.User"
+
 AUTH_PASSWORD_VALIDATORS = []  # Add validators when going to production
 
 # ---------------------------------------------------------------------------
@@ -169,10 +175,9 @@ AUTH_PASSWORD_VALIDATORS = []  # Add validators when going to production
 # ---------------------------------------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
+
 USE_I18N = True
 USE_TZ = True
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ---------------------------------------------------------------------------
 # 9. Static & Media Files
@@ -180,7 +185,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # WhiteNoise: compressed + cache-busted static files for production

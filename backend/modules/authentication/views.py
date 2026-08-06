@@ -6,9 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, inline_serializer
 
-# pyrefly: ignore [missing-import]
-from rest_framework_simplejwt.tokens import RefreshToken  
-# pyrefly: ignore [missing-import]
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
 from .repositories import PasswordResetTokenRepository
@@ -61,9 +59,9 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         user = serializer.save()
 
-        # Issue tokens directly after registration
         refresh = RefreshToken.for_user(user)
 
         return Response(
@@ -365,15 +363,16 @@ class LogoutView(APIView):
     )
     def post(self, request):
         try:
-            refresh_value = request.data.get("refresh")
-            if not refresh_value:
+            refresh_token = request.data.get("refresh")
+
+            if not refresh_token:
                 return Response(
                     {"message": "Refresh token is required"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            refresh = RefreshToken(refresh_value)
-            refresh.blacklist()
+            token = RefreshToken(refresh_token)
+            token.blacklist()
 
             return Response({"message": "Logged out successfully"})
 
