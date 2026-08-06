@@ -2,11 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from common.permissions import IsAdminOrDepartmentHead
 from .serializers import ReportSerializer
 from .services import ReportService
 
 
 class ReportListCreateView(APIView):
+    permission_classes = [IsAdminOrDepartmentHead]
 
     def get(self, request):
         reports = ReportService.list_reports()
@@ -27,6 +29,7 @@ class ReportListCreateView(APIView):
 
 
 class ReportDetailView(APIView):
+    permission_classes = [IsAdminOrDepartmentHead]
 
     def get(self, request, id):
         report = ReportService.get_report(id)
@@ -52,6 +55,7 @@ class ReportDetailView(APIView):
 
 
 class ReportStatisticsView(APIView):
+    permission_classes = [IsAdminOrDepartmentHead]
 
     def get(self, request):
-        return Response(ReportService.statistics())
+        return Response(ReportService.statistics())

@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
 
 from common.exceptions import NotFoundException
+from common.permissions import IsSuperAdminOrCityAdmin
 from modules.users.serializers import (
     UserCreateSerializer,
     UserReadSerializer,
@@ -15,11 +16,7 @@ from modules.users.services import UserService
 
 
 class UserListCreateView(APIView):
-    def get_permissions(self):
-        # POST (registration) is public, GET requires login
-        if self.request.method == "POST":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    permission_classes = [IsSuperAdminOrCityAdmin]
 
     @extend_schema(
         summary="List users",
@@ -50,7 +47,8 @@ class UserListCreateView(APIView):
 
 
 class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperAdminOrCityAdmin]
+
 
     def get_object(self, pk):
         try:

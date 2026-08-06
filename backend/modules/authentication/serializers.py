@@ -73,4 +73,5 @@ class ChangePasswordSerializer(serializers.Serializer):
         write_only=True,
         min_length=8,
         trim_whitespace=False,
+        required=True,
     )

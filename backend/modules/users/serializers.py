@@ -12,6 +12,8 @@ class UserReadSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone_number",
+            "role",
+            "department",
             "is_active",
             "created_at",
             "updated_at",
@@ -30,6 +32,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone_number",
+            "role",
+            "department",
         ]
 
     def create(self, validated_data):
@@ -47,5 +51,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone_number",
+            "role",
+            "department",
             "is_active",
         ]
+

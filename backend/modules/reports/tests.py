@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
 
@@ -11,12 +12,12 @@ User = get_user_model()
 class ReportAPITest(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="reportuser",
-            email="testuser@example.com",
-            password="testpassword123"
+        self.admin_user = User.objects.create_user(
+            email="report_admin@gmail.com",
+            password="adminpassword",
+            is_staff=True
         )
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.admin_user)
         self.report = Report.objects.create(
             title="Road Report",
             department="Roads",
