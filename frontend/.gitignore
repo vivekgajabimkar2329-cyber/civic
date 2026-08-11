@@ -1,4 +1,30 @@
+
+# Node
 node_modules/
-dist/
+package-lock.json
+npm-debug.log*
+.pnpm-store/
+
+# Environment Variables
 .env
-*.log
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+.vite/build
+
+# Testing
+coverage/
+.nyc_output/
+
+# Vite
+.vite/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
