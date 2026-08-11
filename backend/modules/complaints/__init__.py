@@ -1,1 +1,1 @@
-"""Complaints module."""
+# Complaints app.

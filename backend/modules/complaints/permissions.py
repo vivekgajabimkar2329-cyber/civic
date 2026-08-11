@@ -1,1 +1,0 @@
-"""Complaint-specific DRF permissions."""
