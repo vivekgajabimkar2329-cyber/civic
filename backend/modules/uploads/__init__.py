@@ -1,1 +1,1 @@
-"""Uploads module."""
+# Uploads app.

@@ -1,4 +1,4 @@
-from .repositories import ReportRepository
+from ..repositories import ReportRepository
 
 
 class ReportService:

@@ -1,5 +1,4 @@
-"""Report persistence queries."""
-from .models import Report
+from ..models import Report
 
 
 class ReportRepository:

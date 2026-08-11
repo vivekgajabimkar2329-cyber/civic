@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from .models import Report
+from ..models import Report
 
 User = get_user_model()
 

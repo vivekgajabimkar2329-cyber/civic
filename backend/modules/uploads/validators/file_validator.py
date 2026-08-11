@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+
 def validate_file(file):
     max_size = 10 * 1024 * 1024  # 10 MB
 

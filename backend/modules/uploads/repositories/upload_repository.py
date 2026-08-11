@@ -1,4 +1,5 @@
-from modules.uploads.models import UploadedFile
+from ..models import UploadedFile
+
 
 class UploadRepository:
     @staticmethod

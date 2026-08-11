@@ -1,6 +1,5 @@
-"""Report API serializers."""
 from rest_framework import serializers
-from .models import Report
+from modules.reports.models import Report
 
 
 class ReportSerializer(serializers.ModelSerializer):

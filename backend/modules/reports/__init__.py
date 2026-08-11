@@ -1,1 +1,1 @@
-"""Reports module."""
+# Reports app.

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from common.models import BaseModel
 
+
 class UploadedFile(BaseModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 

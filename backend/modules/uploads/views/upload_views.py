@@ -6,11 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, inline_serializer
 
 from common.responses import success_response
-from modules.uploads.serializers import (
+from ..serializers import (
     FileUploadInputSerializer,
     UploadedFileSerializer,
 )
-from modules.uploads.services import UploadService
+from ..services import UploadService
 
 
 class FileUploadView(APIView):

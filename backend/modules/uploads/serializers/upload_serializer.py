@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from modules.uploads.models import UploadedFile
-from modules.uploads.validators import validate_file
+from ..validators import validate_file
 
 
 class UploadedFileSerializer(serializers.ModelSerializer):
