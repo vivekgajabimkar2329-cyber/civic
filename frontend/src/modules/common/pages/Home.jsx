@@ -4,9 +4,11 @@ import {
   ArrowRight, ShieldCheck, Activity, Brain, Clock, Search, FileText, 
   ChevronDown, Smartphone, Star, Map, Users, Heart, Camera, Mic, 
   Globe, Zap, AlertTriangle, Building, Truck, Briefcase, Plus, Minus,
-  Phone, Mail, MessageSquare, BookOpen, CheckCircle2, ChevronRight, MapPin, Bell
+  Phone, Mail, MessageSquare, BookOpen, CheckCircle2, ChevronRight, MapPin, Bell,
+  ClipboardCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import charminarImg from '../../../assets/charminar.png';
 import { AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 // Data for Analytics Dashboard preview
@@ -33,150 +35,107 @@ export const Home = () => {
     <div className="w-full bg-white font-sans text-slate-800">
       
       {/* 1. Hero Section */}
-      <section className="relative pt-12 pb-24 overflow-hidden bg-slate-50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="relative px-4 sm:px-6 lg:px-8 pt-24 pb-12 bg-white">
+        <div 
+          className="relative max-w-[1400px] mx-auto rounded-[32px] overflow-hidden bg-cover bg-center min-h-[480px] lg:min-h-[520px] flex items-center p-6 sm:p-10 lg:p-16 text-white shadow-2xl border border-slate-100"
+          style={{ backgroundImage: `url(${charminarImg})` }}
+        >
+          {/* Responsive Background Overlays for a premium dark-ambient look that highlights sunset colors */}
+          <div className="absolute inset-0 bg-black/50 lg:hidden" />
+          <div 
+            className="hidden lg:block absolute inset-0" 
+            style={{
+              background: 'linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.15) 75%, rgba(0,0,0,0) 100%)'
+            }}
+          />
           
-          <div className="z-10 space-y-8">
-            <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]">
-              Empowering Citizens with <br/>
-              <span className="text-[#00897b]">AI-Driven</span> Civic Governance
-            </h1>
-            <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
-              Civic AI uses the power of Artificial Intelligence to identify, classify and resolve civic issues faster. Together, let's build cleaner, safer and smarter communities.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link to="/report" className="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/20">
-                Report an Issue
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link to="/track" className="px-6 py-3.5 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg font-semibold transition-colors flex items-center gap-2 shadow-sm">
-                Track Complaint
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center w-full">
+            {/* Left Content */}
+            <div className="space-y-6 lg:space-y-8">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+                Together for a <br />
+                Better <span className="text-[#00ff87] drop-shadow-sm">Hyderabad</span>
+              </h1>
+              <p className="text-base sm:text-lg text-slate-200 max-w-md leading-relaxed font-medium">
+                Report issues, track progress, and contribute to cleaner, safer, and smarter communities.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link 
+                  to="/report" 
+                  className="px-6 py-3.5 bg-[#007a3e] hover:bg-[#006030] text-white rounded-xl font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center gap-2 shadow-[#007a3e]/20"
+                >
+                  <FileText className="w-5 h-5" />
+                  Report an Issue
+                </Link>
+                <Link 
+                  to="/track" 
+                  className="px-6 py-3.5 bg-white/10 border border-white/20 text-white hover:bg-white/20 rounded-xl font-semibold transition-all hover:-translate-y-0.5 hover:shadow-md flex items-center gap-2 backdrop-blur-sm"
+                >
+                  <Search className="w-5 h-5 text-white/80" />
+                  Track an Issue
+                </Link>
+              </div>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-10 border-t border-slate-200/60 mt-10">
-               <div className="flex flex-col gap-2">
-                  <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
-                     <Brain className="w-4 h-4" />
+
+            {/* Right Card (Hyderabad at a Glance) */}
+            <div className="w-full flex justify-center lg:justify-end">
+              <div className="bg-white/10 backdrop-blur-lg rounded-[28px] p-6 shadow-2xl border border-white/20 w-full max-w-md transition-all duration-300 hover:bg-white/15 hover:border-white/30">
+                <div className="mb-6">
+                  <h3 className="text-base sm:text-lg font-bold text-white">Hyderabad at a Glance</h3>
+                  <p className="text-[10px] text-white/60 font-bold uppercase tracking-wider">Real-time Overview</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">
+                  {/* 1. Issues Reported */}
+                  <div className="flex flex-col items-center text-center group cursor-pointer">
+                    <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-350 flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/5 group-hover:scale-110 transition-transform duration-300 border border-emerald-500/30">
+                      <ClipboardCheck className="w-5 h-5" />
+                    </div>
+                    <span className="text-xl font-extrabold text-white">2,568</span>
+                    <span className="text-[10px] text-white/70 font-bold leading-tight mt-0.5">Issues Reported</span>
+                    <span className="text-[9px] text-emerald-400 font-extrabold mt-1 flex items-center gap-0.5">
+                      ↑ 15% <span className="text-white/40 font-medium font-sans">this week</span>
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">AI Powered</p>
-                    <p className="text-[10px] text-slate-500 leading-tight">Smart Resolution</p>
+
+                  {/* 2. Resolved Issues */}
+                  <div className="flex flex-col items-center text-center group cursor-pointer">
+                    <div className="w-11 h-11 rounded-2xl bg-blue-500/20 text-blue-355 flex items-center justify-center mb-3 shadow-lg shadow-blue-500/5 group-hover:scale-110 transition-transform duration-300 border border-blue-500/30">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <span className="text-xl font-extrabold text-white">1,782</span>
+                    <span className="text-[10px] text-white/70 font-bold leading-tight mt-0.5">Resolved Issues</span>
+                    <span className="text-[9px] text-emerald-400 font-extrabold mt-1 flex items-center gap-0.5">
+                      ↑ 18% <span className="text-white/40 font-medium font-sans">this week</span>
+                    </span>
                   </div>
-               </div>
-               <div className="flex flex-col gap-2">
-                  <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
-                     <Clock className="w-4 h-4" />
+
+                  {/* 3. In Progress */}
+                  <div className="flex flex-col items-center text-center group cursor-pointer">
+                    <div className="w-11 h-11 rounded-2xl bg-amber-500/20 text-amber-350 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/5 group-hover:scale-110 transition-transform duration-300 border border-amber-500/30">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <span className="text-xl font-extrabold text-white">486</span>
+                    <span className="text-[10px] text-white/70 font-bold leading-tight mt-0.5">In Progress</span>
+                    <span className="text-[9px] text-emerald-400 font-extrabold mt-1 flex items-center gap-0.5">
+                      ↑ 6% <span className="text-white/40 font-medium font-sans">this week</span>
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">Real-Time</p>
-                    <p className="text-[10px] text-slate-500 leading-tight">Tracking</p>
+
+                  {/* 4. Active Citizens */}
+                  <div className="flex flex-col items-center text-center group cursor-pointer">
+                    <div className="w-11 h-11 rounded-2xl bg-purple-500/20 text-purple-350 flex items-center justify-center mb-3 shadow-lg shadow-purple-500/5 group-hover:scale-110 transition-transform duration-300 border border-purple-500/30">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <span className="text-xl font-extrabold text-white">4,328</span>
+                    <span className="text-[10px] text-white/70 font-bold leading-tight mt-0.5">Active Citizens</span>
+                    <span className="text-[9px] text-emerald-400 font-extrabold mt-1 flex items-center gap-0.5">
+                      ↑ 21% <span className="text-white/40 font-medium font-sans">this week</span>
+                    </span>
                   </div>
-               </div>
-               <div className="flex flex-col gap-2">
-                  <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
-                     <Globe className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">Multi-Language</p>
-                    <p className="text-[10px] text-slate-500 leading-tight">Support</p>
-                  </div>
-               </div>
-               <div className="flex flex-col gap-2">
-                  <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
-                     <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">Secure &</p>
-                    <p className="text-[10px] text-slate-500 leading-tight">Transparent</p>
-                  </div>
-               </div>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Hero Right - CSS Mockup of the graphic */}
-          <div className="relative h-[500px] flex justify-center lg:justify-end items-center">
-             {/* Background City Placeholder */}
-             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-blue-900 rounded-3xl" style={{ clipPath: 'polygon(20% 0%, 100% 0, 100% 100%, 0% 100%)' }}></div>
-             
-             {/* Phone Mockup */}
-             <div className="relative z-20 w-[240px] h-[500px] bg-white rounded-[2rem] border-[8px] border-slate-800 shadow-2xl overflow-hidden flex flex-col">
-                <div className="bg-blue-600 h-32 p-4 text-white relative">
-                   <div className="flex items-center gap-2 mb-4">
-                      <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
-                         <ShieldCheck className="w-4 h-4 text-blue-600" />
-                      </div>
-                      <span className="font-bold text-sm">Civic AI</span>
-                   </div>
-                   <p className="text-xs font-medium">Hello, Citizen!</p>
-                   <p className="text-sm font-bold mt-1">How can we<br/>help you today?</p>
-                </div>
-                <div className="flex-1 bg-slate-50 p-3 pt-6 rounded-t-3xl -mt-4 z-10 space-y-4">
-                   <div className="bg-white p-3 rounded-xl shadow-sm flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center"><AlertTriangle className="w-4 h-4"/></div>
-                      <div>
-                         <p className="text-xs font-bold text-slate-800">Report an Issue</p>
-                         <p className="text-[10px] text-slate-400">Potholes, lights, etc.</p>
-                      </div>
-                   </div>
-                   <div>
-                     <p className="text-xs font-bold mb-2">Categories</p>
-                     <div className="grid grid-cols-3 gap-2">
-                        {[1,2,3,4,5,6].map(i => (
-                           <div key={i} className="flex flex-col items-center gap-1">
-                              <div className="w-10 h-10 bg-white shadow-sm rounded-lg flex items-center justify-center text-blue-500">
-                                 <Building className="w-4 h-4" />
-                              </div>
-                              <div className="w-8 h-1.5 bg-slate-200 rounded"></div>
-                           </div>
-                        ))}
-                     </div>
-                   </div>
-                </div>
-             </div>
-
-             {/* Floating Stats */}
-             <div className="absolute top-10 left-10 z-30 bg-white p-3 pr-6 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-float-slow">
-                <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center">
-                   <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <div>
-                   <p className="text-sm font-bold text-slate-900">100,000+</p>
-                   <p className="text-[10px] text-slate-500">Issues Resolved</p>
-                </div>
-             </div>
-
-             <div className="absolute top-1/3 -left-10 z-30 bg-white p-3 pr-6 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-float">
-                <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center">
-                   <Building className="w-5 h-5" />
-                </div>
-                <div>
-                   <p className="text-sm font-bold text-slate-900">500+</p>
-                   <p className="text-[10px] text-slate-500">Departments</p>
-                </div>
-             </div>
-
-             <div className="absolute top-24 -right-12 z-30 bg-white p-3 pr-6 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-float-slow" style={{ animationDelay: '1s' }}>
-                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                   <Brain className="w-5 h-5" />
-                </div>
-                <div>
-                   <p className="text-sm font-bold text-slate-900">98%</p>
-                   <p className="text-[10px] text-slate-500">AI Accuracy</p>
-                </div>
-             </div>
-
-             <div className="absolute bottom-32 -right-8 z-30 bg-white p-3 pr-6 rounded-xl shadow-xl border border-slate-100 flex items-center gap-3 animate-float" style={{ animationDelay: '0.5s' }}>
-                <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center">
-                   <Zap className="w-5 h-5" />
-                </div>
-                <div>
-                   <p className="text-sm font-bold text-slate-900">AI Response</p>
-                   <p className="text-[10px] text-slate-500">&lt; 30 Seconds</p>
-                </div>
-             </div>
-
           </div>
         </div>
       </section>

@@ -77,11 +77,11 @@ const AppRoutes = () => {
 
   if (token && user) {
     // Signed-in users should leave public entry pages for their role dashboard.
-    if (user.role === 'user' && ['/', '/login'].includes(location.pathname)) {
+    if (user.role === 'user' && ['/login'].includes(location.pathname)) {
       return <Navigate to={getDashboardRoute()} replace />;
     }
     // Admin and super admin should always land on their dashboards.
-    if (user.role !== 'user' && ['/', '/home', '/login'].includes(location.pathname)) {
+    if (user.role !== 'user' && ['/login'].includes(location.pathname)) {
       return <Navigate to={getDashboardRoute()} replace />;
     }
   }
